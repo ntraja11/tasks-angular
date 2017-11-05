@@ -1,0 +1,24 @@
+<div class="container-fluid mt-4">
+  <table class="table table-hover table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">Description</th>
+        <th scope="col">Due Date</th>
+        <th scope="col">Days Left</th>
+        <th scope="col">Options</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of tasks">
+        <td scope="row">{{task.category}}</td>
+        <td>{{task.description}}</td>
+        <td>{{task.dueDate | date:'dd-MM-yyyy'}}</td>
+        <td>{{task.reminderDate | date:'dd-MM-yyyy'}}</td>
+        <td>
+          <button type="button" class="btn btn-link" (click)="taskOptions(task)">Edit / Delete</button>
+        </td>
+      </tr>      
+    </tbody>
+  </table>
+</div>
