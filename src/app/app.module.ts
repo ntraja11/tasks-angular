@@ -1,9 +1,10 @@
+import { TaskErrorHandler } from './common/task-error-handler';
 import { RouterModule } from '@angular/router';
 import { TasksService } from './services/tasks.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { TaskNavbarComponent } from './components/task-navbar/task-navbar.component';
@@ -42,7 +43,10 @@ import { EditTaskComponent } from './components/edit-task/edit-task.component';
       }
     ])
   ],
-  providers: [TasksService],
+  providers: [
+    TasksService,
+    {provide:ErrorHandler, useClass:TaskErrorHandler}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

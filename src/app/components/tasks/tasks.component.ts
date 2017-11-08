@@ -16,13 +16,10 @@ export class TasksComponent implements OnInit {
     
     ngOnInit() {
       this.service.getTasksList()
-        .subscribe(response => {
-          this.tasks = response.json();
-        })
+        .subscribe(tasks => this.tasks = tasks);
     }
 
     taskOptions(task){
       this.router.navigate(['/edit-task/', task._id.$oid]);
-    }
-  
+    }  
 }

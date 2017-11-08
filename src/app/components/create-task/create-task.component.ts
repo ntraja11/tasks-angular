@@ -1,3 +1,5 @@
+import { BadTaskInputError } from '../../common/bad-task-input-error';
+import { TaskError } from '../../common/task-error';
 import { Router } from '@angular/router';
 import { TasksService } from '../../services/tasks.service';
 import { Http } from '@angular/http';
@@ -24,10 +26,15 @@ export class CreateTaskComponent {
 
   createTask(){    
     this.service.createTask(this.form.value)
-    .subscribe(() => {
-      //console.log("After creation : " + response.json())
-      //sessionStorage.setItem("tasks", response.json());
-      this.router.navigate(['/tasks'])
+    .subscribe(
+      (task) => {
+        this.router.navigate(['/tasks']);
+      }, 
+      (error:TaskError) => {
+        if(error instanceof BadTaskInputError){
+          alert("This task has bad inputs");
+        }
+        else throw error    
     });
   }
 
@@ -43,5 +50,4 @@ export class CreateTaskComponent {
   get reminderDate(){
     return this.form.get('reminderDate');
   }
-
 }

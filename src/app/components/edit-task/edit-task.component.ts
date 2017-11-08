@@ -1,7 +1,10 @@
+import { TaskError } from '../../common/task-error';
+import { TaskNotFoundError } from '../../common/task-not-found-error';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TasksService } from '../../services/tasks.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import 'rxjs/add/observable/throw';
 
 @Component({
   selector: '',
@@ -10,15 +13,17 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class EditTaskComponent implements OnInit {
 
-  //@Input()
   task:any = {};
   validatorsArray = [Validators.required, Validators.minLength(3)];
 
   editForm = new FormGroup({
+    _id: new FormGroup({
+      $oid: new FormControl()
+    }),
     category: new FormControl("", this.validatorsArray),
-    description: new FormControl(this.task.description, this.validatorsArray),
-    dueDate: new FormControl(this.task.dueDate, this.validatorsArray[0]),
-    reminderDate: new FormControl(this.task.reminderDate, this.validatorsArray[0])
+    description: new FormControl("", this.validatorsArray),
+    dueDate: new FormControl("", this.validatorsArray[0]),
+    reminderDate: new FormControl("", this.validatorsArray[0])
   })
 
   constructor(private service:TasksService, private router:Router, private activatedRoute:ActivatedRoute) { }
@@ -27,32 +32,40 @@ export class EditTaskComponent implements OnInit {
     this.activatedRoute.paramMap
       .subscribe(params => {                
         this.service.getTask(params.get('taskId'))
-          .subscribe( (response) => {
-            this.task = response.json();
-            this.category.setValue(this.task.category);
-            this.description.setValue(this.task.description);
-            this.dueDate.setValue(this.task.dueDate);
-            this.reminderDate.setValue(this.task.reminderDate);
-          })
+          .subscribe( 
+            (task) => {
+              this.editForm.setValue(task);              
+            }, error => {
+              this.navigateToTasks();
+              throw error;              
+            });
       });
   }
 
   editTask(event){
     if(event.target.name === 'edit'){
-      this.service.editTask(this.editForm.value, this.task._id.$oid)
-      .subscribe((response) => {        
-        this.router.navigate(['/tasks'])
-      });  
+      this.service.editTask(this.editForm.value)
+      .subscribe(task => {
+        this.navigateToTasks()
+      });
     }
     else{
-      this.service.deleteTask(this.task._id.$oid)
-      .subscribe((response) => {
-        this.router.navigate(['/tasks'])
-      });
-    }    
-    
+      this.service.deleteTask(this.editForm.value._id.$oid)
+      .subscribe(
+        () => { this.navigateToTasks(); },
+        (error:TaskError) => {
+          if(error instanceof TaskNotFoundError){
+            alert("This task has already been deleted");            
+          }
+          else throw error
+          this.navigateToTasks();          
+        });        
+    }        
   }
 
+  navigateToTasks(){
+    this.router.navigate(['/tasks']);
+  }
   get category(){
     return this.editForm.get('category');
   }
