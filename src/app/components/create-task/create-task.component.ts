@@ -1,3 +1,5 @@
+
+import { TaskValidators } from '../../task-validators/task-validators';
 import { BadTaskInputError } from '../../common/bad-task-input-error';
 import { TaskError } from '../../common/task-error';
 import { Router } from '@angular/router';
@@ -16,11 +18,14 @@ export class CreateTaskComponent {
   validatorsArray = [Validators.required, Validators.minLength(3)];
 
   form = new FormGroup({
+    _id: new FormGroup({
+      $oid: new FormControl()
+    }),
     category: new FormControl("", this.validatorsArray),
     description: new FormControl("", this.validatorsArray),
-    dueDate: new FormControl("", this.validatorsArray[0]),
-    reminderDate: new FormControl("", this.validatorsArray[0])
-  })
+    dueDate: new FormControl("", [this.validatorsArray[0], TaskValidators.dateValidator]),
+    reminderDate: new FormControl("", [this.validatorsArray[0], TaskValidators.dateValidator])
+  }, TaskValidators.checkDates);
 
   constructor(private service:TasksService, private router:Router) { }
 

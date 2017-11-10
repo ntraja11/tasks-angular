@@ -1,3 +1,4 @@
+import { TaskValidators } from '../../task-validators/task-validators';
 import { TaskError } from '../../common/task-error';
 import { TaskNotFoundError } from '../../common/task-not-found-error';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,9 +23,9 @@ export class EditTaskComponent implements OnInit {
     }),
     category: new FormControl("", this.validatorsArray),
     description: new FormControl("", this.validatorsArray),
-    dueDate: new FormControl("", this.validatorsArray[0]),
-    reminderDate: new FormControl("", this.validatorsArray[0])
-  })
+    dueDate: new FormControl("", [this.validatorsArray[0], TaskValidators.dateValidator]),
+    reminderDate: new FormControl("", [this.validatorsArray[0], TaskValidators.dateValidator])
+  }, TaskValidators.checkDates);
 
   constructor(private service:TasksService, private router:Router, private activatedRoute:ActivatedRoute) { }
 
