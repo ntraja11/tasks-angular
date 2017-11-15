@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskNavbarComponent } from './task-navbar.component';
 
-describe('TaskNavbarComponent', () => {
+xdescribe('TaskNavbarComponent', () => {
   let component: TaskNavbarComponent;
   let fixture: ComponentFixture<TaskNavbarComponent>;
 

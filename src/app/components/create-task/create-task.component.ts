@@ -15,6 +15,7 @@ import { Component } from '@angular/core';
 })
 export class CreateTaskComponent {
 
+  newTask;
   validatorsArray = [Validators.required, Validators.minLength(3)];
 
   form = new FormGroup({
@@ -33,6 +34,7 @@ export class CreateTaskComponent {
     this.service.createTask(this.form.value)
     .subscribe(
       (task) => {
+        this.newTask = task;    // for testing purpose
         this.router.navigate(['/tasks']);
       }, 
       (error:TaskError) => {

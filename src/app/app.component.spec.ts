@@ -1,32 +1,45 @@
-import { TestBed, async } from '@angular/core/testing';
+import { RouterOutlet } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TaskNavbarComponent } from './components/task-navbar/task-navbar.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from "@angular/platform-browser"; 
 
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
+  
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       declarations: [
-        AppComponent
+        AppComponent,
+        TaskNavbarComponent
       ],
-    }).compileComponents();
-  }));
+    });
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+  });
 
-  it(`should have as title 'app'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app');
-  }));
+  it('should create the app', () => {    
+    expect(component).toBeTruthy();
+  });
 
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!');
-  }));
+  it(`should have task-nav and router-outlet`, () => {
+    let navElement = fixture.debugElement.children[0].children[0];
+    let routerElement = fixture.debugElement.children[0].children[1];
+    
+    expect(navElement.name).toBe('task-navbar');
+    expect(routerElement.name).toBe('router-outlet');
+  });
+
+  // xit(`should have router-outlet`, () => {
+  //   let debugElement = fixture.debugElement.query(By.directive(RouterOutlet));
+
+  //   expect(debugElement).not.toBeNull();
+  // });
+
 });
